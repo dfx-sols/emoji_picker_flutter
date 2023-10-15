@@ -25,43 +25,42 @@ mixin SkinToneOverlayStateMixin<T extends StatefulWidget> on State<T> {
     OnEmojiSelected onEmojiSelected,
   ) {
     // Generate other skintone options
-    final skinTonesEmoji = SkinTone.values
-        .map((skinTone) => utils.applySkinTone(emoji, skinTone))
-        .toList();
+    final skinTonesEmoji = SkinTone.values.map((skinTone) => utils.applySkinTone(emoji, skinTone)).toList();
 
-    final positionRect = _calculateEmojiPosition(context, index, config.columns,
-        skinToneCount, scrollControllerOffset, tabBarHeight);
+    final positionRect = _calculateEmojiPosition(context, index, config.columns, skinToneCount, scrollControllerOffset, tabBarHeight);
 
     _overlay = OverlayEntry(
       builder: (context) => Positioned(
         left: positionRect.left,
         top: positionRect.top,
-        child: Material(
-          elevation: 4.0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            color: config.skinToneDialogBgColor,
-            child: Row(
-              children: [
-                _buildSkinToneEmoji(
-                  emoji,
-                  categoryEmoji,
-                  positionRect.width,
-                  emojiSize,
-                  onEmojiSelected,
-                  config,
+        child: SizedBox(
+          child: Material(
+            elevation: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: config.skinToneDialogBgColor,
+                border: const Border(
+                  bottom: BorderSide(color: Colors.black54, style: BorderStyle.solid),
                 ),
-                ...List.generate(
-                  SkinTone.values.length,
-                  (index) => _buildSkinToneEmoji(
-                      skinTonesEmoji[index],
-                      categoryEmoji,
-                      positionRect.width,
-                      emojiSize,
-                      onEmojiSelected,
-                      config),
-                ),
-              ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                children: [
+                  _buildSkinToneEmoji(
+                    emoji,
+                    categoryEmoji,
+                    positionRect.width,
+                    emojiSize,
+                    onEmojiSelected,
+                    config,
+                  ),
+                  ...List.generate(
+                    SkinTone.values.length,
+                    (index) =>
+                        _buildSkinToneEmoji(skinTonesEmoji[index], categoryEmoji, positionRect.width, emojiSize, onEmojiSelected, config),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -95,8 +94,8 @@ mixin SkinToneOverlayStateMixin<T extends StatefulWidget> on State<T> {
         ),
       );
 
-  Rect _calculateEmojiPosition(BuildContext context, int index, int columns,
-      int skinToneCount, double scrollControllerOffset, double tabBarHeight) {
+  Rect _calculateEmojiPosition(
+      BuildContext context, int index, int columns, int skinToneCount, double scrollControllerOffset, double tabBarHeight) {
     // Calculate position of emoji in the grid
     final row = index ~/ columns;
     final column = index % columns;
@@ -105,14 +104,9 @@ mixin SkinToneOverlayStateMixin<T extends StatefulWidget> on State<T> {
     final offset = renderBox.localToGlobal(Offset.zero);
     final emojiSpace = renderBox.size.width / columns;
     final topOffset = emojiSpace;
-    final leftOffset =
-        _getLeftOffset(emojiSpace, column, skinToneCount, columns);
+    final leftOffset = _getLeftOffset(emojiSpace, column, skinToneCount, columns);
     final left = offset.dx + column * emojiSpace + leftOffset;
-    final top = tabBarHeight +
-        offset.dy +
-        row * emojiSpace -
-        scrollControllerOffset -
-        topOffset;
+    final top = tabBarHeight + offset.dy + row * emojiSpace - scrollControllerOffset - topOffset;
 
     return Rect.fromLTWH(left, top, emojiSpace, .0);
   }
@@ -125,15 +119,12 @@ mixin SkinToneOverlayStateMixin<T extends StatefulWidget> on State<T> {
 // larger than half of the whole width
 // Case 3: Enough space to left and right border and offset can be half
 // of whole width
-  double _getLeftOffset(
-      double emojiWidth, int column, int skinToneCount, int columns) {
+  double _getLeftOffset(double emojiWidth, int column, int skinToneCount, int columns) {
     var remainingColumns = columns - (column + 1 + (skinToneCount ~/ 2));
     if (column >= 0 && column < 3) {
       return -1 * column * emojiWidth;
     } else if (remainingColumns < 0) {
-      return -1 *
-          ((skinToneCount ~/ 2 - 1) + -1 * remainingColumns) *
-          emojiWidth;
+      return -1 * ((skinToneCount ~/ 2 - 1) + -1 * remainingColumns) * emojiWidth;
     }
     return -1 * ((skinToneCount ~/ 2) * emojiWidth) + emojiWidth / 2;
   }

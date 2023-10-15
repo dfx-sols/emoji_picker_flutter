@@ -75,23 +75,6 @@ class EmojiCell extends StatelessWidget {
     VoidCallback? onLongPressed,
     required Widget child,
   }) {
-    if (buttonMode == ButtonMode.MATERIAL) {
-      return InkWell(
-        onTap: onPressed,
-        onLongPress: onLongPressed,
-        child: child,
-      );
-    }
-    if (buttonMode == ButtonMode.CUPERTINO) {
-      return GestureDetector(
-        onLongPress: onLongPressed,
-        child: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: onPressed,
-          child: child,
-        ),
-      );
-    }
     return GestureDetector(
       onLongPress: onLongPressed,
       onTap: onPressed,
@@ -112,15 +95,7 @@ class EmojiCell extends StatelessWidget {
     );
 
     return Center(
-      child: emoji.hasSkinTone &&
-              enableSkinTones &&
-              onSkinToneDialogRequested != null
-          ? Container(
-              decoration:
-                  TriangleDecoration(color: skinToneIndicatorColor, size: 8.0),
-              child: emojiText,
-            )
-          : emojiText,
+      child: emojiText,
     );
   }
 
