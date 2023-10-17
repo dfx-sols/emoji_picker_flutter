@@ -106,7 +106,7 @@ class EmojiCell extends StatelessWidget {
     };
 
     final onLongPressed = () {
-      onSkinToneDialogRequested?.call(emoji, emojiSize, categoryEmoji, index);
+      //onSkinToneDialogRequested?.call(emoji, emojiSize, categoryEmoji, index);
     };
 
     return _buildButtonWidget(
